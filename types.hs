@@ -1,7 +1,11 @@
-module Types(
- Position
-,Move
+module Types
+( Position
+, Move
+, Square
+, FEN
 ) where
 
-type Position = String
-type Move = ((Int,Int),(Int,Int))
+type FEN = String
+type Position = [String]
+type Square = (Int, Int)
+type Move = (Square,Square)

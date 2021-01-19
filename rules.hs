@@ -3,6 +3,8 @@ isLegalMove
 ) where
 
 import Types
+import InterpretFEN
 
-isLegalMove :: Move -> Position -> Bool
+isLegalMove :: Move -> FEN -> Bool
 isLegalMove move pos = True
+
