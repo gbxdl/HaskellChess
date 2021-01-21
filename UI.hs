@@ -1,9 +1,9 @@
 module UI (
-showFEN
+showFen
 ) where
 
 import Types
-import InterpretFEN
+import InterpretFen
 
-showFEN :: FEN -> String
-showFEN fen = "\n" ++ foldl (\acc x -> showRow x ++ "\n" ++ acc) "" (fenToRows fen)
+showFen :: Fen -> String
+showFen fen = "\n" ++ foldl (\acc x -> x++ "\n" ++ acc) "" (fenToBoard fen)

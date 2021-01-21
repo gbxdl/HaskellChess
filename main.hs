@@ -7,18 +7,23 @@ import Data.Char
 main = do 
     run startingPosition
 
-run :: FEN -> IO ()
-run position = do
-    putStrLn $ showFEN position
+run :: Fen -> IO ()
+run fen = do
+    putStrLn $ showFen fen
     putStr "Please input a move "
     moveString <- getLine
-    let move = convertInputToMove moveString
-    if isLegalMove move position
-    then let newPos = nextPosition move position 
-         in run newPos 
-    else do 
-        putStrLn "Not a legal move. Input format is two squares e.g. e2 e4"
-        run position  
+    case moveString of
+        "quit"    -> return ()
+        "new game"-> run startingPosition
+        otherwise -> let move = convertInputToMove moveString
+                     in if isLegalMove move fen
+                           then let newFen = nextFen move fen
+                                in do 
+                                      putStrLn newFen
+                                      run newFen 
+                         else do 
+                            putStrLn "Not a legal move. Input format is two squares e.g. e2 e4"
+                            run fen 
 
 convertInputToMove :: String -> Move
 convertInputToMove input = 
@@ -26,4 +31,4 @@ convertInputToMove input =
         to = last $ words input
         (fx:fy:_) = from
         (tx:ty:_) = to
-    in ((ord fx - ord 'a'+1, ord fy - ord '0'),(ord tx - ord 'a' + 1, ord ty - ord '0'))
+    in ((ord fx - ord 'a', ord fy - ord '1'),(ord tx - ord 'a', ord ty - ord '1'))
