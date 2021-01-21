@@ -10,7 +10,8 @@ isLegalMove :: Move -> Fen -> Bool
 isLegalMove move fen
    | not $ isBoardPosition from = False
    | not $ isBoardPosition to = False 
-   | piece == ' ' = False
+   | from == to = False
+   | piece == '.' = False
    | (piece == 'N') || (piece == 'n') = knightMove move board color
    | otherwise = True
       where from = fst move
