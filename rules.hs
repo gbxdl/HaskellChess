@@ -1,5 +1,6 @@
-module Rules(
-isLegalMove
+module Rules
+( isLegalMove
+, gameover
 ) where
 
 import Types
@@ -35,3 +36,33 @@ knightMove move board color
             notTakingBlackPiece = not $ isUpper $ pieceFromBoard board to
             isWhitePiece = isLower $ pieceFromBoard board from
             isBlackPiece = isUpper $ pieceFromBoard board from
+
+gameover :: Fens -> (Bool, String)
+gameover fens
+ | threeFold fens = (True, "Draw; Threefold repetition.")
+ | fiftyMoveRule fen = (True, "Draw; Fifty move rule.")
+ | checkmate fen = (True, "Checkmate!")
+ | stalemate fen = (True, "Draw; Stalemate")
+ | otherwise = (False, "")
+   where fen = head fens
+   
+threeFold :: Fens -> Bool
+threeFold fens
+   | count position positions > 2 = True
+   | otherwise = False
+    where positions = map (head.words) fens
+          position = head positions
+
+count :: Eq a => a -> [a] -> Int
+count x = length . filter (==x)
+
+fiftyMoveRule :: Fen -> Bool
+fiftyMoveRule fen = 99 < fenToFullMove fen
+
+checkmate :: Fen -> Bool
+checkmate fen = False --toDo
+
+stalemate :: Fen -> Bool
+stalemate fen = False --toDo
+
+--do checkmate and stalemate require a list of possible moves? If we need that anyway than probably redo how we check if moves are allowed. maybe also needed for castling right?
