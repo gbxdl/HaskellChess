@@ -4,6 +4,7 @@ module Types
 , Row
 , Square
 , Fen
+, Fens
 , Color
 , Enpassant
 , CastlingRights
@@ -13,6 +14,7 @@ module Types
 ) where
 
 type Fen = String
+type Fens = [String]
 type Board = [String]
 type Row = String
 

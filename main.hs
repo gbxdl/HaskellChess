@@ -5,25 +5,29 @@ import Rules
 import Data.Char
 
 main = do 
-    run startingPosition
+    run [startingPosition]
 
-run :: Fen -> IO ()
-run fen = do
+run :: Fens -> IO ()
+run fens = do
+    let fen = head fens
     putStrLn $ showFen fen
-    putStr "Please input a move "
+    putStrLn "Please input a move / new game / undo / quit"
     moveString <- getLine
     case moveString of
         "quit"    -> return ()
-        "new game"-> run startingPosition
+        "new game"-> run [startingPosition]
+        "undo" -> if length fens > 1
+                  then run $ tail fens
+                  else run fens
         otherwise -> let move = convertInputToMove moveString
                      in if isLegalMove move fen
                            then let newFen = nextFen move fen
                                 in do 
                                       putStrLn newFen
-                                      run newFen 
+                                      run $ newFen:fens 
                          else do 
                             putStrLn "Not a legal move. Input format is two squares e.g. e2 e4"
-                            run fen 
+                            run fens 
 
 convertInputToMove :: String -> Move
 convertInputToMove input = 
