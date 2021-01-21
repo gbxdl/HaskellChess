@@ -31,7 +31,7 @@ knightMove move board color
       where to = snd move
             from = fst move
             isKnightMove = to `elem` [(x+dx,y+dy) | dx <- [-2,-1,1,2], dy <- [-2,-1,1,2], abs dx + abs dy == 3, let x = fst $ fst move, let y = snd $ fst move]
-            notTakingWhitePiece = not $ isUpper $ pieceFromBoard board to
-            notTakingBlackPiece = not $ isLower $ pieceFromBoard board to
+            notTakingWhitePiece = not $ isLower $ pieceFromBoard board to
+            notTakingBlackPiece = not $ isUpper $ pieceFromBoard board to
             isWhitePiece = isLower $ pieceFromBoard board from
             isBlackPiece = isUpper $ pieceFromBoard board from
