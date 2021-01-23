@@ -11,6 +11,7 @@ module Types
 , HalfMove
 , FullMove
 , pieceFromBoard
+, isBoardPosition
 ) where
 
 type Fen = String
@@ -30,5 +31,10 @@ type FullMove = Int
 -- data Color = Color "W" | "B" -- deriving (show)
 -- data Piece = K | Q | R | B | K | P | k | q | 
 
-pieceFromBoard :: Board -> Square -> Char
-pieceFromBoard board square = board !! snd square !! fst square
+isBoardPosition :: Square -> Bool
+isBoardPosition pos = pos `elem` [(x,y)| x<-[0..7], y<-[0..7]]
+
+pieceFromBoard :: Square -> Board -> Char
+pieceFromBoard square board
+ | isBoardPosition square = board !! snd square !! fst square
+ | otherwise = 'x'

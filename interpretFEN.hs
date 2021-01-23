@@ -1,6 +1,7 @@
 module InterpretFen
 ( wordsWhen
 , notationToMove
+, squareToNotation
 , fenToBoard
 , boardToFen
 , fenToColor
@@ -20,12 +21,16 @@ import Data.List
 import Types
 
 notationToMove :: String -> Move
-notationToMove input = 
-    let from = head $ words input
-        to = last $ words input
-        (fx:fy:_) = from
-        (tx:ty:_) = to
+notationToMove input 
+   | input == "-" = ((0,0),(0,0))
+   | otherwise = let from = head $ words input
+                     to = last $ words input
+                     (fx:fy:_) = from
+                     (tx:ty:_) = to
     in ((ord fx - ord 'a', ord fy - ord '1'),(ord tx - ord 'a', ord ty - ord '1'))
+    
+squareToNotation :: Square -> String
+squareToNotation sqr = chr (fst sqr + ord 'a') : chr (snd sqr + ord '1') : []
 
 wordsWhen :: (Char -> Bool) -> String -> [String]
 wordsWhen p s = case dropWhile p s of

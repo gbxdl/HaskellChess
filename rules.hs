@@ -1,6 +1,8 @@
 module Rules
 ( isLegalMove
 , gameover
+, twoStepsUp
+, twoStepsDown
 ) where
 
 import Types
@@ -18,12 +20,9 @@ isLegalMove move fen
    | otherwise = True
       where from = fst move
             to = snd move
-            piece = pieceFromBoard board from
+            piece = pieceFromBoard from board
             board = fenToBoard fen 
             color = fenToColor fen
-
-isBoardPosition :: Square -> Bool
-isBoardPosition pos = pos `elem` [(x,y)| x<-[0..7], y<-[0..7]] 
 
 knightMove :: Move -> Board -> Color -> Bool
 knightMove move board color
@@ -33,10 +32,10 @@ knightMove move board color
       where to = snd move
             from = fst move
             isKnightMove = to `elem` [(x+dx,y+dy) | dx <- [-2,-1,1,2], dy <- [-2,-1,1,2], abs dx + abs dy == 3, let x = fst $ fst move, let y = snd $ fst move]
-            notTakingWhitePiece = not $ isLower $ pieceFromBoard board to
-            notTakingBlackPiece = not $ isUpper $ pieceFromBoard board to
-            isWhitePiece = isLower $ pieceFromBoard board from
-            isBlackPiece = isUpper $ pieceFromBoard board from
+            notTakingWhitePiece = not $ isLower $ pieceFromBoard to board
+            notTakingBlackPiece = not $ isUpper $ pieceFromBoard to board
+            isWhitePiece = isLower $ pieceFromBoard from board
+            isBlackPiece = isUpper $ pieceFromBoard from board
             
 pawnMove :: Move -> Board -> Color -> Enpassant -> Bool
 pawnMove move board color enpassant
@@ -44,24 +43,24 @@ pawnMove move board color enpassant
    | color == "b" = isBlackPawnMove && isBlackPiece
       where from = fst move
             to = snd move
-            isWhitePiece = isLower $ pieceFromBoard board from
-            isBlackPiece = isUpper $ pieceFromBoard board from
+            isWhitePiece = isLower $ pieceFromBoard from board
+            isBlackPiece = isUpper $ pieceFromBoard from board
             isWhitePawnMove = (oneStepUp from to && toEmpty to board) || (twoStepsUp from to && toEmpty to board && snd from == 1) || whitePawnCapture from to board || isEnpassantWhite from to enpassant
             isBlackPawnMove = (oneStepDown from to && toEmpty to board) || (twoStepsDown from to && toEmpty to board && snd from == 6) || blackPawnCapture from to board || isEnpassantBlack from to enpassant
 
 isEnpassantWhite :: Square -> Square -> Enpassant -> Bool
 isEnpassantWhite from to enpassant = let enpassantSquare = fst $ notationToMove enpassant
-                                in enpassantSquare == to && abs(fst to - fst from) == 1 && snd to - snd from == 1
+                                     in enpassantSquare == to && abs(fst to - fst from) == 1 && snd to - snd from == 1
 
 isEnpassantBlack :: Square -> Square -> Enpassant -> Bool
 isEnpassantBlack from to enpassant = let enpassantSquare = fst $ notationToMove enpassant
-                               in enpassantSquare == to && abs(fst to - fst from) == 1 && snd to - snd from == -1
+                                     in enpassantSquare == to && abs(fst to - fst from) == 1 && snd to - snd from == -1
 
 whitePawnCapture :: Square -> Square -> Board -> Bool
-whitePawnCapture from to board = abs(fst to - fst from) == 1 && snd to - snd from == 1 && isUpper (pieceFromBoard board to)
+whitePawnCapture from to board = abs(fst to - fst from) == 1 && snd to - snd from == 1 && isUpper (pieceFromBoard to board)
 
 blackPawnCapture :: Square -> Square -> Board -> Bool
-blackPawnCapture from to board = abs(fst to - fst from) == 1 && snd to - snd from == -1 && isLower (pieceFromBoard board to)
+blackPawnCapture from to board = abs(fst to - fst from) == 1 && snd to - snd from == -1 && isLower (pieceFromBoard to board)
 
 oneStepUp :: Square -> Square -> Bool
 oneStepUp from to = snd to - snd from == 1 && sameFile from to
@@ -76,7 +75,7 @@ twoStepsDown :: Square -> Square -> Bool
 twoStepsDown from to = snd to - snd from == -2 && sameFile from to
 
 toEmpty :: Square -> Board -> Bool
-toEmpty to board = pieceFromBoard board to == '.'
+toEmpty to board = pieceFromBoard to board == '.'
 
 sameFile :: Square -> Square -> Bool
 sameFile from to = fst from == fst to

@@ -1,8 +1,8 @@
 import Types
 import UI
-import ModifyPosition
 import InterpretFen
 import Rules
+import ModifyPosition
 import Data.Char
 
 main = do 
