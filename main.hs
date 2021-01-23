@@ -1,6 +1,7 @@
 import Types
 import UI
 import ModifyPosition
+import InterpretFen
 import Rules
 import Data.Char
 
@@ -24,7 +25,7 @@ run fens = do
            "undo"     -> if length fens > 1
                          then run $ tail fens
                          else run fens
-           otherwise  -> let move = convertInputToMove moveString
+           otherwise  -> let move = notationToMove moveString
                          in if isLegalMove move fen
                                then let newFen = nextFen move fen
                                     in do 
@@ -32,12 +33,4 @@ run fens = do
                                           run $ newFen:fens 
                              else do 
                                 putStrLn "Not a legal move. Input format is two squares e.g. e2 e4"
-                                run fens 
-
-convertInputToMove :: String -> Move
-convertInputToMove input = 
-    let from = head $ words input
-        to = last $ words input
-        (fx:fy:_) = from
-        (tx:ty:_) = to
-    in ((ord fx - ord 'a', ord fy - ord '1'),(ord tx - ord 'a', ord ty - ord '1'))
+                                run fens
