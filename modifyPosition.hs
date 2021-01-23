@@ -41,8 +41,10 @@ nextEnpassant :: Move -> Fen -> Fen
 nextEnpassant move fen = fenToEnpassant fen --toDo 
 
 nextHalfMove :: Move -> Fen -> Fen --counts moves since last capture pawn move.
-nextHalfMove move fen = show $ fenToHalfMove fen + 1--toDo
-
+nextHalfMove move fen 
+   | True = show $ fenToHalfMove fen--toDo
+   | otherwise = show $ fenToHalfMove fen + 1
+   
 nextFullMove :: Fen -> Fen
 nextFullMove fen
  | fenToColor fen == "b" = show $ fenToFullMove fen + 1
