@@ -14,6 +14,7 @@ isLegalMove move fen
    | from == to = False
    | piece == '.' = False
    | (piece == 'N') || (piece == 'n') = knightMove move board color
+   | (piece == 'P') || (piece == 'p') = pawnMove move board color
    | otherwise = True
       where from = fst move
             to = snd move
@@ -36,7 +37,45 @@ knightMove move board color
             notTakingBlackPiece = not $ isUpper $ pieceFromBoard board to
             isWhitePiece = isLower $ pieceFromBoard board from
             isBlackPiece = isUpper $ pieceFromBoard board from
+            
+pawnMove :: Move -> Board -> Color -> Bool
+pawnMove move board color
+   | color == "w" = isWhitePawnMove && isWhitePiece
+   | color == "b" = isBlackPawnMove && isBlackPiece
+      where from = fst move
+            to = snd move
+            isWhitePiece = isLower $ pieceFromBoard board from
+            isBlackPiece = isUpper $ pieceFromBoard board from
+            isWhitePawnMove = (oneStepUp from to && toEmpty to board) || (twoStepsUp from to && toEmpty to board && snd from == 1) || whitePawnCapture from to board
+            isBlackPawnMove = (oneStepDown from to && toEmpty to board) || (twoStepsDown from to && toEmpty to board && snd from == 6) || blackPawnCapture from to board
 
+whitePawnCapture :: Square -> Square -> Board -> Bool
+whitePawnCapture from to board = abs(fst to - fst from) == 1 && snd to - snd from == 1 && isUpper (pieceFromBoard board to)
+
+blackPawnCapture :: Square -> Square -> Board -> Bool
+blackPawnCapture from to board = abs(fst to - fst from) == 1 && snd to - snd from == -1 && isLower (pieceFromBoard board to)
+
+oneStepUp :: Square -> Square -> Bool
+oneStepUp from to = snd to - snd from == 1 && sameFile from to
+
+oneStepDown :: Square -> Square -> Bool
+oneStepDown from to = snd to - snd from == -1 && sameFile from to
+
+twoStepsUp :: Square -> Square -> Bool
+twoStepsUp from to = snd to - snd from == 2 && sameFile from to
+
+twoStepsDown :: Square -> Square -> Bool
+twoStepsDown from to = snd to - snd from == -2 && sameFile from to
+
+toEmpty :: Square -> Board -> Bool
+toEmpty to board = pieceFromBoard board to == '.'
+
+sameFile :: Square -> Square -> Bool
+sameFile from to = fst from == fst to
+
+sameRow :: Square -> Square -> Bool
+sameRow from to = snd from == snd to
+   
 gameover :: Fens -> (Bool, String)
 gameover fens
  | threeFold fens = (True, "Draw; Threefold repetition.")
@@ -52,7 +91,7 @@ threeFold fens
    | otherwise = False
     where positions = map (head.words) fens
           position = head positions
-
+          
 count :: Eq a => a -> [a] -> Int
 count x = length . filter (==x)
 
