@@ -14,7 +14,7 @@ isLegalMove move fen
    | from == to = False
    | piece == '.' = False
    | (piece == 'N') || (piece == 'n') = knightMove move board color
-   | (piece == 'P') || (piece == 'p') = pawnMove move board color
+   | (piece == 'P') || (piece == 'p') = pawnMove move board color (fenToEnpassant fen)
    | otherwise = True
       where from = fst move
             to = snd move
@@ -38,16 +38,24 @@ knightMove move board color
             isWhitePiece = isLower $ pieceFromBoard board from
             isBlackPiece = isUpper $ pieceFromBoard board from
             
-pawnMove :: Move -> Board -> Color -> Bool
-pawnMove move board color
+pawnMove :: Move -> Board -> Color -> Enpassant -> Bool
+pawnMove move board color enpassant
    | color == "w" = isWhitePawnMove && isWhitePiece
    | color == "b" = isBlackPawnMove && isBlackPiece
       where from = fst move
             to = snd move
             isWhitePiece = isLower $ pieceFromBoard board from
             isBlackPiece = isUpper $ pieceFromBoard board from
-            isWhitePawnMove = (oneStepUp from to && toEmpty to board) || (twoStepsUp from to && toEmpty to board && snd from == 1) || whitePawnCapture from to board
-            isBlackPawnMove = (oneStepDown from to && toEmpty to board) || (twoStepsDown from to && toEmpty to board && snd from == 6) || blackPawnCapture from to board
+            isWhitePawnMove = (oneStepUp from to && toEmpty to board) || (twoStepsUp from to && toEmpty to board && snd from == 1) || whitePawnCapture from to board || isEnpassantWhite from to enpassant
+            isBlackPawnMove = (oneStepDown from to && toEmpty to board) || (twoStepsDown from to && toEmpty to board && snd from == 6) || blackPawnCapture from to board || isEnpassantBlack from to enpassant
+
+isEnpassantWhite :: Square -> Square -> Enpassant -> Bool
+isEnpassantWhite from to enpassant = let enpassantSquare = fst $ notationToMove enpassant
+                                in enpassantSquare == to && abs(fst to - fst from) == 1 && snd to - snd from == 1
+
+isEnpassantBlack :: Square -> Square -> Enpassant -> Bool
+isEnpassantBlack from to enpassant = let enpassantSquare = fst $ notationToMove enpassant
+                               in enpassantSquare == to && abs(fst to - fst from) == 1 && snd to - snd from == -1
 
 whitePawnCapture :: Square -> Square -> Board -> Bool
 whitePawnCapture from to board = abs(fst to - fst from) == 1 && snd to - snd from == 1 && isUpper (pieceFromBoard board to)
