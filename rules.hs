@@ -32,10 +32,10 @@ knightMove move board color
       where to = snd move
             from = fst move
             isKnightMove = to `elem` [(x+dx,y+dy) | dx <- [-2,-1,1,2], dy <- [-2,-1,1,2], abs dx + abs dy == 3, let x = fst $ fst move, let y = snd $ fst move]
-            notTakingWhitePiece = not $ isLower $ pieceFromBoard to board
-            notTakingBlackPiece = not $ isUpper $ pieceFromBoard to board
-            isWhitePiece = isLower $ pieceFromBoard from board
-            isBlackPiece = isUpper $ pieceFromBoard from board
+            notTakingWhitePiece = not $ isUpper $ pieceFromBoard to board
+            notTakingBlackPiece = not $ isLower $ pieceFromBoard to board
+            isWhitePiece = isUpper $ pieceFromBoard from board
+            isBlackPiece = isLower $ pieceFromBoard from board
             
 pawnMove :: Move -> Board -> Color -> Enpassant -> Bool
 pawnMove move board color enpassant
@@ -43,8 +43,8 @@ pawnMove move board color enpassant
    | color == "b" = isBlackPawnMove && isBlackPiece
       where from = fst move
             to = snd move
-            isWhitePiece = isLower $ pieceFromBoard from board
-            isBlackPiece = isUpper $ pieceFromBoard from board
+            isWhitePiece = isUpper $ pieceFromBoard from board
+            isBlackPiece = isLower $ pieceFromBoard from board
             isWhitePawnMove = (oneStepUp from to && toEmpty to board) || (twoStepsUp from to && toEmpty to board && snd from == 1) || whitePawnCapture from to board || isEnpassantWhite from to enpassant
             isBlackPawnMove = (oneStepDown from to && toEmpty to board) || (twoStepsDown from to && toEmpty to board && snd from == 6) || blackPawnCapture from to board || isEnpassantBlack from to enpassant
 
@@ -57,10 +57,10 @@ isEnpassantBlack from to enpassant = let enpassantSquare = fst $ notationToMove 
                                      in enpassantSquare == to && abs(fst to - fst from) == 1 && snd to - snd from == -1
 
 whitePawnCapture :: Square -> Square -> Board -> Bool
-whitePawnCapture from to board = abs(fst to - fst from) == 1 && snd to - snd from == 1 && isUpper (pieceFromBoard to board)
+whitePawnCapture from to board = abs(fst to - fst from) == 1 && snd to - snd from == 1 && isLower (pieceFromBoard to board)
 
 blackPawnCapture :: Square -> Square -> Board -> Bool
-blackPawnCapture from to board = abs(fst to - fst from) == 1 && snd to - snd from == -1 && isLower (pieceFromBoard to board)
+blackPawnCapture from to board = abs(fst to - fst from) == 1 && snd to - snd from == -1 && isUpper (pieceFromBoard to board)
 
 oneStepUp :: Square -> Square -> Bool
 oneStepUp from to = snd to - snd from == 1 && sameFile from to

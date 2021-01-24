@@ -63,10 +63,10 @@ nextEnpassant move fen
  | otherwise = "-"
   where from = fst move
         to = snd move
-        blackPawnRight = pieceFromBoard (fst to+1, snd to) (fenToBoard fen) == 'P'
-        blackPawnLeft = pieceFromBoard (fst to-1, snd to) (fenToBoard fen) == 'P'
-        whitePawnRight = pieceFromBoard (fst to+1, snd to) (fenToBoard fen) == 'p'
-        whitePawnLeft = pieceFromBoard (fst to-1, snd to) (fenToBoard fen) == 'p'
+        blackPawnRight = pieceFromBoard (fst to+1, snd to) (fenToBoard fen) == 'p'
+        blackPawnLeft = pieceFromBoard (fst to-1, snd to) (fenToBoard fen) == 'p'
+        whitePawnRight = pieceFromBoard (fst to+1, snd to) (fenToBoard fen) == 'P'
+        whitePawnLeft = pieceFromBoard (fst to-1, snd to) (fenToBoard fen) == 'P'
 
 nextHalfMove :: Move -> Fen -> Fen --counts moves since last capture pawn move.
 nextHalfMove move fen 

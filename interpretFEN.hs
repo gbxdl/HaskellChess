@@ -43,10 +43,19 @@ wordsWhen p s = case dropWhile p s of
                             where (w, s'') = break p s'
 
 fenToBoard :: Fen -> [String]
-fenToBoard = (wordsWhen (=='/')).head.words
+fenToBoard = (wordsWhen (=='/')).head.words.flipCapitals
+            
+flipCapitals :: String -> String
+flipCapitals xs = foldr (\x acc -> flipCapital x : acc) "" xs
+ 
+flipCapital :: Char -> Char
+flipCapital x
+   | isUpper x = toLower x
+   | isLower x = toUpper x
+   | otherwise = x
 
 boardToFen :: Board -> Fen
-boardToFen = concat.(intersperse "/")
+boardToFen = flipCapitals.concat.(intersperse "/")
 
 fenToColor :: Fen -> Color
 fenToColor fen = words fen !! 1
