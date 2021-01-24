@@ -7,7 +7,7 @@ import InterpretFen
 import Rules
 
 startingPosition :: Fen
-startingPosition = "rnbqkbnr/pppppppp/......../......../......../......../PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+startingPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 nextPosition :: Move -> Fen -> Fen
 nextPosition move fen = 
@@ -79,4 +79,4 @@ nextFullMove fen
  | otherwise = show $ fenToFullMove fen
 
 nextFen :: Move -> Fen -> Fen
-nextFen move fen = nextPosition move fen ++ " " ++ nextColor fen ++ " " ++ nextCastlingRights move fen ++ " " ++ nextEnpassant move fen ++ " " ++ nextHalfMove move fen++ " " ++ nextFullMove fen
+nextFen move fen = customToRealFen $ nextPosition move fen ++ " " ++ nextColor fen ++ " " ++ nextCastlingRights move fen ++ " " ++ nextEnpassant move fen ++ " " ++ nextHalfMove move fen++ " " ++ nextFullMove fen

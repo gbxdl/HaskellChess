@@ -14,14 +14,18 @@ module InterpretFen
 , halfMoveToFen
 , fenToFullMove
 , fullMoveToFen
+, realToCustomFen
+, customToRealFen
 ) where
 
 import Data.Char
 import Data.List
 import Types
 
+--crashes for empy imput. Should word wtih pattern matching
 notationToMove :: String -> Move
 notationToMove input 
+   | input == "" = ((0,0),(0,0))
    | input == "-" = ((0,0),(0,0))
    | otherwise = let from = head $ words input
                      to = last $ words input
@@ -73,3 +77,26 @@ fenToFullMove fen = read (words fen !! 5) :: Int
 
 fullMoveToFen :: FullMove -> Fen
 fullMoveToFen fm = show fm
+
+realToCustomFen :: Fen -> Fen
+realToCustomFen fen = foldr (\x acc -> realToCustomFenChar x ++ acc) "" (head $ words fen) ++ " " ++ (unwords $ tail $ words fen)
+
+realToCustomFenChar :: Char -> String
+realToCustomFenChar x 
+ | isNumber x = replicate (digitToInt x) '.'
+ | otherwise = [x]
+
+customToRealFen :: Fen -> Fen
+customToRealFen fen = concat $ foldr (\x acc -> if '.' `elem` x then show (length x) : acc else x : acc) [] $ wordsWhenDot fen
+   
+wordsWhenDot :: String -> [String]
+wordsWhenDot s = case dropWhile (=='.') s of
+                      "" -> []
+                      s' -> w : wordsWhenNotDot s''
+                            where (w, s'') = break (=='.') s'
+
+wordsWhenNotDot :: String -> [String]
+wordsWhenNotDot s = case dropWhile (/='.') s of
+                      "" -> []
+                      s' -> w : wordsWhenDot s''
+                            where (w, s'') = break (/='.') s'

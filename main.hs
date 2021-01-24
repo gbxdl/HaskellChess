@@ -10,7 +10,7 @@ main = do
 
 run :: Fens -> IO ()
 run fens = do
-    let fen = head fens
+    let fen = realToCustomFen $ head fens
     putStrLn $ showFen fen
     if fst $ gameover fens
     then putStrLn $ snd $ gameover fens
