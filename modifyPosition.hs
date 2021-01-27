@@ -47,11 +47,9 @@ nextBoard move board isEnpassant isCastles
 
 -- It seems very complicated to add and remove pieces in this structure. Think about whether this is feasible with bishop type moves or see if we need something different.
 
-nextColor :: Fen -> Fen
-nextColor fen
- | color == "w" = "b"
- | color == "b" = "w"
-   where color = fenToColor fen
+nextColor :: Color -> Color
+nextColor White = Black
+nextColor Black = White
     
 nextCastlingRights :: Move -> Fen -> Fen
 nextCastlingRights move fen = fenToCastlingRights fen --toDo
@@ -75,8 +73,8 @@ nextHalfMove move fen
    
 nextFullMove :: Fen -> Fen
 nextFullMove fen
- | fenToColor fen == "b" = show $ fenToFullMove fen + 1
+ | fenToColor fen == Black = show $ fenToFullMove fen + 1
  | otherwise = show $ fenToFullMove fen
 
 nextFen :: Move -> Fen -> Fen
-nextFen move fen = customToRealFen $ nextPosition move fen ++ " " ++ nextColor fen ++ " " ++ nextCastlingRights move fen ++ " " ++ nextEnpassant move fen ++ " " ++ nextHalfMove move fen++ " " ++ nextFullMove fen
+nextFen move fen = customToRealFen $ nextPosition move fen ++ " " ++ (colorToFen $ nextColor $ fenToColor fen) ++ " " ++ nextCastlingRights move fen ++ " " ++ nextEnpassant move fen ++ " " ++ nextHalfMove move fen++ " " ++ nextFullMove fen

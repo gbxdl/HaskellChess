@@ -27,10 +27,10 @@ run fens = do
                          else run fens
            otherwise  -> let move = notationToMove moveString
                          in if isLegalMove move fen
-                               then let newFen = nextFen move fen
-                                    in do 
-                                          mapM putStrLn $ newFen:fens
-                                          run $ newFen:fens 
-                             else do 
+                            then let newFen = nextFen move fen
+                                 in do 
+                                       mapM putStrLn $ newFen:fens
+                                       run $ newFen:fens 
+                            else do 
                                 putStrLn "Not a legal move. Input format is two squares e.g. e2 e4"
                                 run fens

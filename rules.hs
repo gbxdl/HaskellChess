@@ -17,6 +17,7 @@ isLegalMove move fen
    | piece == '.' = False
    | (piece == 'N') || (piece == 'n') = knightMove move board color
    | (piece == 'P') || (piece == 'p') = pawnMove move board color (fenToEnpassant fen)
+   | (piece == 'K') || (piece == 'k') = kingMove move board color (fenToCastlingRights fen)
    | otherwise = True
       where from = fst move
             to = snd move
@@ -24,10 +25,13 @@ isLegalMove move fen
             board = fenToBoard fen 
             color = fenToColor fen
 
+kingMove :: Move -> Board -> Color -> CastlingRights -> Bool
+kingMove move board color cr = True
+
 knightMove :: Move -> Board -> Color -> Bool
 knightMove move board color
-   | color == "w" = isKnightMove && isWhitePiece && notTakingWhitePiece
-   | color == "b" = isKnightMove && isBlackPiece && notTakingBlackPiece
+   | color == White = isKnightMove && isWhitePiece && notTakingWhitePiece
+   | color == Black = isKnightMove && isBlackPiece && notTakingBlackPiece
    | otherwise = False
       where to = snd move
             from = fst move
@@ -39,8 +43,8 @@ knightMove move board color
             
 pawnMove :: Move -> Board -> Color -> Enpassant -> Bool
 pawnMove move board color enpassant
-   | color == "w" = isWhitePawnMove && isWhitePiece
-   | color == "b" = isBlackPawnMove && isBlackPiece
+   | color == White = isWhitePawnMove && isWhitePiece
+   | color == Black = isBlackPawnMove && isBlackPiece
       where from = fst move
             to = snd move
             isWhitePiece = isUpper $ pieceFromBoard from board

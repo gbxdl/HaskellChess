@@ -58,10 +58,10 @@ boardToFen :: Board -> Fen
 boardToFen = flipCapitals.concat.(intersperse "/")
 
 fenToColor :: Fen -> Color
-fenToColor fen = words fen !! 1
+fenToColor fen = read (words fen !! 1)
 
 colorToFen :: Color -> Fen
-colorToFen c = c
+colorToFen c = show c
 
 fenToCastlingRights :: Fen -> CastlingRights
 fenToCastlingRights fen = words fen !! 2
